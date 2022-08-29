@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="VDj-Bh-Kod">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="MXE-aI-PxM">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
@@ -8,7 +8,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Apps-->
+        <!--앱-->
         <scene sceneID="ZhZ-Gr-ism">
             <objects>
                 <viewController id="VDj-Bh-Kod" customClass="AppsViewController" customModule="AppStoreClone" customModuleProvider="target" sceneMemberID="viewController">
@@ -18,11 +18,30 @@
                         <viewLayoutGuide key="safeArea" id="nLo-Os-brb"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Apps" image="apps" id="Bg5-uN-wgl"/>
+                    <navigationItem key="navigationItem" title="앱" id="W0E-wy-aZe"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="mo5-sJ-MgA" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1320" y="88"/>
+            <point key="canvasLocation" x="2220" y="88"/>
+        </scene>
+        <!--앱-->
+        <scene sceneID="vlZ-t2-nBW">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="MXE-aI-PxM" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="앱" image="apps" id="Bg5-uN-wgl"/>
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="3B7-y8-srX">
+                        <rect key="frame" x="0.0" y="44" width="414" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="VDj-Bh-Kod" kind="relationship" relationship="rootViewController" id="Ebq-HP-rBs"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="2ZN-Pe-W2k" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1318.840579710145" y="87.723214285714278"/>
         </scene>
     </scenes>
     <resources>
