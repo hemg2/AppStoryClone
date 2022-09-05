@@ -6,32 +6,60 @@
 //
 
 import UIKit
-import Kingfisher
+import Kingfisher  // 이미지 캐싱을 도와주는 라이브러리
+import Alamofire  //화면이 뜰때 해야한다.   ??? 라이브러리
 
 class GamesViewController: UIViewController {
-    @IBOutlet weak var collerctionView: UICollectionView!
-    var dataSource: UICollectionViewDiffableDataSource<Int, FeaturedCollectionViewCellModel>? //이애가 엄청난 친구다  
+    @IBOutlet weak var collerctionView: UICollectionView! {
+        didSet {
+            collerctionView.collectionViewLayout = createFeaturedListLayout()
+        }
+    }
+    //이애가 엄청난 친구다
+    lazy var dataSource: UICollectionViewDiffableDataSource<Int, FeaturedCollectionViewCellModel>? =
+    UICollectionViewDiffableDataSource<Int, FeaturedCollectionViewCellModel>(collectionView: collerctionView, cellProvider: { collectionView, indexPath, itemIdentifier in
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "FeaturedCollectionViewCell", for: indexPath)
+        (cell as? FeaturedCollectionViewCell)?.setModel(itemIdentifier)
+        return cell
+    })
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        dataSource = UICollectionViewDiffableDataSource<Int, FeaturedCollectionViewCellModel>(collectionView: collerctionView, cellProvider: { collectionView, indexPath, itemIdentifier in
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "FeaturedCollectionViewCell", for: indexPath)
-            (cell as? FeaturedCollectionViewCell)?.setModel(itemIdentifier)
-            return cell
-        })
+        // 뷰디드로드 간소화 보기편하게 하기 위해서 펑션을 만들어서 축소한다.
         
-        collerctionView.collectionViewLayout = createFeaturedListLayout()
-        
+        callAPI()
+    }
+    
+    
+    func callAPI() {
+        AF.request("https://rss.applemarketingtools.com/api/v2/kr/music/most-played/10/music-videos.json").response { dataresponse in
+            guard let data = dataresponse.data else { return } //data 가 옵셔널이라서 가드렛
+            let musicVideoFeed = try! JSONDecoder().decode(MusicVideoFeed.self, from: data)
+            let cellModel = musicVideoFeed.feed.results.map {
+                FeaturedCollectionViewCellModel(featureReason: $0.releaseDate,
+                                                title: $0.name,
+                                                subTitle: $0.artistName,
+                                                mainImageUrl: $0.artworkUrl100.replacingOccurrences(of: "/100x56mv.jpg", with: "/1000x56mv.jpg"),
+                                                appIconImageUrl: $0.artworkUrl100,
+                                                appName: $0.name,
+                                                appType: $0.genres.first?.name.rawValue ?? "",
+                                                downloadStatus: .get, hasInAppPurchase: true)
+            }
+            print("결과\(musicVideoFeed)")
+            self.reloadData(cellModel)
+        }
+    }
+    
+    func reloadData(_ cellModel: [FeaturedCollectionViewCellModel] ) {
         var snapShot = NSDiffableDataSourceSnapshot<Int, FeaturedCollectionViewCellModel>()
         snapShot.appendSections([0])
-        snapShot.appendItems([FeaturedCollectionViewCellModel(featureReason: "사전예약", title: "원신2", subTitle: "원신을 뛰어넘는", mainImageUrl: "https://picsum.photos/300", appIconImageUrl: "", appName: "원신2", appType: "RPG", downloadStatus: .get, hasInAppPurchase: true),
-                              FeaturedCollectionViewCellModel(featureReason: "사전예약", title: "드래곤볼2", subTitle: "드래곤볼을 뛰어넘는", mainImageUrl: "https://picsum.photos/301", appIconImageUrl: "", appName: "드래곤보2", appType: "RPG", downloadStatus: .get, hasInAppPurchase: true),
-                              FeaturedCollectionViewCellModel(featureReason: "출시 진행중", title: "포켓몬고2", subTitle: "포켓몬을 뛰어넘는", mainImageUrl: "https://picsum.photos/302", appIconImageUrl: "", appName: "포켓몬고2", appType: "RPG", downloadStatus: .get, hasInAppPurchase: true),
-                              FeaturedCollectionViewCellModel(featureReason: "출시 진행중", title: "던파2", subTitle: "던전을 뛰어넘는", mainImageUrl: "https://picsum.photos/303", appIconImageUrl: "", appName: "던앤파이터2", appType: "RPG", downloadStatus: .get, hasInAppPurchase: true),
-                             FeaturedCollectionViewCellModel(featureReason: "사전예약", title: "스폰지밥2", subTitle: "드래곤볼을 뛰어넘는", mainImageUrl: "https://picsum.photos/304", appIconImageUrl: "", appName: "스폰지밥2", appType: "RPG", downloadStatus: .get, hasInAppPurchase: true)],
-                              toSection: 0)
+        snapShot.appendItems(cellModel,
+                             toSection: 0)
         dataSource?.apply(snapShot, animatingDifferences: true)
     }
+    
+    
     func createFeaturedListLayout() -> UICollectionViewLayout {
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
         

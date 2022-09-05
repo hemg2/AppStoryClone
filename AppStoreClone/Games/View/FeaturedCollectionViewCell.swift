@@ -36,16 +36,24 @@ class FeaturedCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var appTypeLabel: UILabel!
     @IBOutlet weak var downloadButton: UIButton!
     @IBOutlet weak var hasInAppPurchaseLabel: UILabel!
+    @IBOutlet weak var windowView: UIView!
     
     func setModel(_ model: FeaturedCollectionViewCellModel) {
         blueLabel.text = model.featureReason
         titleLabel.text = model.title
         subtitleLabel.text = model.subTitle
+        windowView.layer.cornerRadius = 10
+        downloadButton.layer.cornerRadius = 16
         if let url = URL(string: model.mainImageUrl) {
             mainImageView.kf.setImage(with: url)
             mainImageView.layer.cornerRadius = 10
         }
-//        appIconImageVIew.image =
+
+        if let url = URL(string: model.appIconImageUrl) {
+            appIconImageVIew.kf.setImage(with: url)
+            appIconImageVIew.layer.cornerRadius = 12
+        }
+            
         appNameLabel.text = model.appName
         appTypeLabel.text = model.appType
         switch model.downloadStatus {
@@ -57,5 +65,6 @@ class FeaturedCollectionViewCell: UICollectionViewCell {
             break
         }                    //히든 안보인다?    ! 줘서 보이게한다?
         hasInAppPurchaseLabel.isEnabled = !model.hasInAppPurchase
+        
     }
 }
